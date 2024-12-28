@@ -6,7 +6,7 @@ from torch_geometric.data import Data
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-service_account = "../gnn-for-synthesis-d583a5dbd612.json"
+service_account = "../gnn-for-synthesis-f4d9ad3451da.json"
 storage_client = storage.Client.from_service_account_json(service_account)
 
 bucket_name = "synthesis-data-bucket"

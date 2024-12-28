@@ -5,7 +5,7 @@ import subprocess
 import re
 from torch_geometric.data import Data
 
-service_account = "../gnn-for-synthesis-d583a5dbd612.json"
+service_account = "../gnn-for-synthesis-f4d9ad3451da.json"
 storage_client = storage.Client.from_service_account_json(service_account)
 
 bucket_name = "synthesis-data-bucket"
@@ -33,21 +33,25 @@ for pt in pt_files:
                 old_file = "./old_pt/" + os.path.basename(pt.name)
                 print(f"Downloading {pt.name} to {old_file}.")
                 pt.download_to_filename(old_file)
-                dataset = torch.load(old_file)
-                #print(dataset)
-                print(f"Converting old file to dict")
-                data_dict = {}
-                for key in dataset.keys:
-                    data_dict[key] = dataset[key]
-                data_file = "../data/" + os.path.basename(pt.name)
-                print(f"Saving {os.path.basename(pt.name)} data to {data_file}.")
-                torch.save(data_dict, data_file)
-                #delete old file from old_pt
-                print(f"Deleteing old_file at {old_file}")
-                os.remove(old_file)
-                count += 1
+                try: 
+                    dataset = torch.load(old_file)
+                    #print(dataset)
+                    print(f"Converting old file to dict")
+                    data_dict = {}
+                    for key in dataset.keys:
+                        data_dict[key] = dataset[key]
+                    data_file = "../data/" + os.path.basename(pt.name)
+                    print(f"Saving {os.path.basename(pt.name)} data to {data_file}.")
+                    torch.save(data_dict, data_file)
+                    #delete old file from old_pt
+                    print(f"Deleteing old_file at {old_file}")
+                    os.remove(old_file)
+                except ModuleNotFoundError:
+                    print("Incorrect PyG version")
+                #count += 1
             else:
-                print(f"File {pt.name} has already been updated")
+                pass
+                #print(f"File {pt.name} has already been updated")
         else:
             print(f"File {pt.name} is not a .pt file that represents  ip-recipe-step information.")
     else:
